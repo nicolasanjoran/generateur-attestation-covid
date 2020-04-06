@@ -40,6 +40,7 @@
     <link rel="mask-icon" href="/deplacement-covid-19/safari-pinned-tab.1551797e.svg" color="#21bf73">
     <title>COVID-19 – Générateur d'attestation de déplacement dérogatoire</title>
     <link rel="stylesheet" href="certificate.55cc4385.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 
 <body>
@@ -47,7 +48,10 @@
         <div>
             <h1 class="flex flex-wrap"> <span class="covid-title"> COVID-19 </span> <span class="covid-subtitle">
                     Générateur d'attestation de&nbsp;déplacement&nbsp;dérogatoire </span> </h1>
-            <p class="text-alert"> Cette version du générateur est une copie du générateur officiel. La seule différence est que ce générateur enregistre les champs dans la mémoire de votre navigateur. Cela évite de rentrer les informations à chaque fois. Aucune information n'est enregistrée ailleurs.</p>
+            <p class="text-alert"> Cette version du générateur est une copie du générateur officiel. La seule différence
+                est que ce générateur enregistre les champs dans la mémoire de votre navigateur. Cela évite de rentrer
+                les informations à chaque fois. Aucune information n'est enregistrée ailleurs lorsque vous utilisez le générateur de base.
+                La fonctionnalité supplémentaire permettant de générer un Apple Wallet Pass envoie vos informations à un serveur hébergé sur Heroku pour créer le Pass. Les informations ne sont pas sauvegardées.</p>
         </div>
     </header>
     <div class="wrapper">
@@ -147,10 +151,16 @@
             </div>
             <p class="text-center mt-5"> <button type="submit" class="btn btn-primary btn-attestation"> <span
                         class="btn-text">Générer mon attestation</span></button> </p>
+            <br>
+            <div style="width: 100%; text-align: center;">
+                <img onclick="downloadPass()" style="transform: scale(1.2); cursor: pointer;"
+                    src="Add_to_Apple_Wallet_rgb_FR.svg" />
+            </div>
+
             <div class="bg-primary d-none" id="snackbar"> L'attestation est téléchargée sur votre appareil. </div>
         </form>
     </div>
-   
+
 
     <div class="alert alert-danger d-none" role="alert" id="alert-facebook"> ATTENTION !! Vous utilisez actuellement le
         navigateur Facebook, ce générateur ne fonctionne pas correctement au sein de ce navigateur ! Merci d'ouvrir
@@ -162,6 +172,8 @@
 </html>
 
 <script>
+    // Expose jQuery to the global object
+    window.jQuery = window.$ = jQuery;
     const urlParams = new URLSearchParams(window.location.search);
     const myParam = urlParams.get('myParam');
     document.getElementById("field-firstname").value = localStorage.getItem("firstname")
@@ -172,5 +184,65 @@
     document.getElementById("field-town").value = localStorage.getItem("town")
     document.getElementById("field-zipcode").value = localStorage.getItem("zipcode")
 
+    function saveProfile() {
+        for (const field of jQuery('#form-profile input')) {
+            if (field.id === 'field-datesortie') {
+                var dateSortie = field.value.split('-')
+                localStorage.setItem(field.id.substring('field-'.length), `${dateSortie[2]}/${dateSortie[1]}/${dateSortie[0]}`)
+            } else {
+                localStorage.setItem(field.id.substring('field-'.length), field.value)
+            }
+        }
+    }
+
+    function getAndSaveReasons() {
+        let values = $('input[name="field-reason"]:checked')
+        let values2 = []
+        for (var i = 0; i < values.length; i++) {
+            values2.push(values[i].value)
+        }
+        let values3 = values2.join('-')
+        localStorage.setItem('reasons', values3)
+        return values3
+    }
+
+    function getProfile() {
+        const fields = {}
+        for (let i = 0; i < localStorage.length; i++) {
+            const name = localStorage.key(i)
+            fields[name] = localStorage.getItem(name)
+        }
+        return fields
+    }
+
+    function downloadPass() {
+        saveProfile()
+        let profile = getProfile()
+        let reasons = getAndSaveReasons()
+
+        fetch("https://covid-pkpass.herokuapp.com", {
+            method: "post",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ profile, reasons }),
+        })
+            .then(response => response.blob())
+            .then(blob => {
+                console.log("Received")
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = "pass.pkpass";
+                document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+                a.click();
+                a.remove();  //afterwards we remove the element again  
+            })
+            .catch(err => {
+                console.error(err)
+            })
+
+    }
     //document.getElementById("checkbox-courses").checked = true
 </script>
