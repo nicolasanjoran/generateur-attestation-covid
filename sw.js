@@ -52,28 +52,28 @@ self.__precacheManifest = [
     "revision": "de5e22b15cf20cb0d586a036d714ee3f"
   },
   {
-    "url": "certificate.4694d2c0.js",
-    "revision": "0334208689514ad055fecb6818a7da97"
+    "url": "certificate.3196ff97.css",
+    "revision": "713c1fc0f164cea2731cbcb36c0c74dd"
+  },
+  {
+    "url": "certificate.5c93900c.js",
+    "revision": "3d478113b85ed5073acbd2844cf4cb19"
   },
   {
     "url": "certificate.84dda806.pdf",
     "revision": "343ac8bb3542a6578f2a4cbaf0f99679"
   },
   {
-    "url": "certificate.b7dcfaaf.css",
-    "revision": "de5506d7c1617c3893421a3c2d405958"
+    "url": "confidentialite.3196ff97.css",
+    "revision": "c4e4477511038b616851c35a054329ac"
   },
   {
-    "url": "confidentialite.969a6e7c.js",
-    "revision": "d8cefe0817430a6992ba7a154f30644a"
-  },
-  {
-    "url": "confidentialite.b7dcfaaf.css",
-    "revision": "b26c6361c14c87d3630b478d597854d1"
+    "url": "confidentialite.c1bfc409.js",
+    "revision": "d73f0e15c810f9fc77e61a8374f2ef93"
   },
   {
     "url": "confidentialite.html",
-    "revision": "de2292744f24ceed8cd5085a8be884e0"
+    "revision": "c405636311ecf0405d1419da33edda67"
   },
   {
     "url": "favicon-16x16.a4687270.png",
@@ -85,7 +85,7 @@ self.__precacheManifest = [
   },
   {
     "url": "index.html",
-    "revision": "0531c1025c1bd5ab33463492473905ad"
+    "revision": "2db45c79c476aec9cabcff8aa802f697"
   },
   {
     "url": "logo_dnum.02e567b8.svg",
@@ -117,9 +117,9 @@ self.__precacheManifest = [
   },
   {
     "url": "./",
-    "revision": "a6a950e5c6cb8fa52d05185c96bc1292"
+    "revision": "b3d2613dbb6de58c88734671ead735cc"
   }
 ].concat(self.__precacheManifest || []);
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
-workbox.routing.registerNavigationRoute(workbox.precaching.getCacheKeyForURL("/deplacement-covid-19/index.html"));
+workbox.routing.registerNavigationRoute(workbox.precaching.getCacheKeyForURL("/generateur-attestation-covid/index.html"));
